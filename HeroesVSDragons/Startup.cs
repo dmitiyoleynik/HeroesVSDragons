@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using Microsoft.Extensions.Configuration;
 
 namespace HeroesVSDragons
 {
@@ -40,13 +42,25 @@ namespace HeroesVSDragons
                         ValidateIssuerSigningKey = true,
                     };
                 });
-            ///////////
+            ILogger logger = new LoggerConfiguration()
+                    .ReadFrom.Configuration(new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json")
+                    .Build())
+                .CreateLogger();
+
+            services.AddSingleton(logger);
             services.AddSingleton<IJWTService,JWTService>();
             services.AddSingleton<IHeroService, HeroService>();
+            services.AddSingleton<IDragonService, DragonService>();
             services.AddTransient<HeroType>();
+            services.AddTransient<DragonType>();
             services.AddTransient<HeroSchema>();
+            services.AddTransient<DragonSchema>();
             services.AddTransient<HeroQuery>();
+            services.AddTransient<DragonQuery>();
             services.AddTransient<HeroMutation>();
+            services.AddTransient<DragonMutation>();
+
             services.AddSingleton<IDependencyResolver>(
                 c => new FuncDependencyResolver(type => c.GetRequiredService(type)));
             services.AddGraphQL(options => {
@@ -71,16 +85,19 @@ namespace HeroesVSDragons
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseWebSockets();
-            app.UseGraphQLWebSockets<HeroSchema>("/graphql");
-            app.UseGraphQL<HeroSchema>("/graphql");
+            app.UseGraphQLWebSockets<DragonSchema>("/graphql/dragon");
+            app.UseGraphQL<DragonSchema>("/graphql/dragon");
+            app.UseGraphQLWebSockets<HeroSchema>("/graphql/hero");
+            app.UseGraphQL<HeroSchema>("/graphql/hero");
+            
             app.UseGraphQLPlayground(new GraphQLPlaygroundOptions()
             {
                 Path = "/ui/playground"
             });
             app.UseGraphiQLServer(new GraphiQLOptions
             {
-                GraphiQLPath = "/ui/graphiql",
-                GraphQLEndPoint = "/graphql"
+                GraphiQLPath = "/ui/graphiql/dragon",
+                GraphQLEndPoint = "/graphql/dragon"
             });
             app.UseGraphQLVoyager(new GraphQLVoyagerOptions()
             {
