@@ -3,24 +3,19 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DragonLibrary_.Services
 {
     public class JWTService : IJWTService
     {
-        public string GetHeroFromToken(string token)
+        public string GetHeroNameFromToken(string token)
         {
-            //string secret = "this is a string used for encrypt and decrypt token";
-            //var key = Encoding.ASCII.GetBytes(secret);
             var handler = new JwtSecurityTokenHandler();
             var validations = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),//new SymmetricSecurityKey(key),
+                IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
                 ValidateIssuer = false,
                 ValidateAudience = false
             };
@@ -30,49 +25,20 @@ namespace DragonLibrary_.Services
 
         public string GetToken(string heroName)
         {
-            var identity = GetIdentity(heroName);
-
-            if (identity == null)
-            {
-                throw new Exception("Hero already exists");
-            }
-
-            var now = DateTime.UtcNow;
-            // создаем JWT-токен
-            var jwt = new JwtSecurityToken(
-                    issuer: AuthOptions.ISSUER,
-                    audience: AuthOptions.AUDIENCE,
-                    notBefore: now,
-                    claims: identity.Claims,
-                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            //var response = new
-            //{
-            //    access_token = encodedJwt,
-            //    heroName = identity.Name
-            //};
-
-            return encodedJwt;
-        }
-        private ClaimsIdentity GetIdentity(string heroName)
-        {
-            if (heroName!= null)
-            {
-                var claims = new List<Claim>
+            var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, heroName)
                 };
 
-                ClaimsIdentity claimsIdentity =
-                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                    ClaimsIdentity.DefaultRoleClaimType);
-                return claimsIdentity;
-            }
+            var now = DateTime.UtcNow;
+            var jwt = new JwtSecurityToken(
+                    notBefore: now,
+                    claims: claims,
+                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            // если пользователя не найдено
-            return null;
+            return encodedJwt;
         }
     }
 }

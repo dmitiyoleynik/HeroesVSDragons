@@ -1,7 +1,6 @@
 ﻿using DragonLibrary_.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,11 +39,6 @@ namespace DragonLibrary_.Services
             }
             throw new Exception("Tipo exception");
         }
-
-        //public int createHero(string name)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public Task<IEnumerable<Hero>> GetHeroesAsync()
         {

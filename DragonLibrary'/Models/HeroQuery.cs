@@ -1,9 +1,5 @@
 ﻿using DragonLibrary_.Services;
 using GraphQL.Types;
-using System.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DragonLibrary_.Models
 {
@@ -30,7 +26,7 @@ namespace DragonLibrary_.Models
                 resolve: context =>
                 {
                     var token = context.GetArgument<string>("token");
-                    return jWTService.GetHeroFromToken(token);
+                    return jWTService.GetHeroNameFromToken(token);
                 }
                 );
         }
