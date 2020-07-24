@@ -10,6 +10,7 @@ namespace DragonLibrary_.Services
     {
         Task<IEnumerable<Hero>> GetHeroesAsync();
         Task<IEnumerable<Hero>> GetSortedHeroesAsync(int id);
+        Task<string> CreateHeroAsync(string name);
         //int createHero(string name);
     }
 }

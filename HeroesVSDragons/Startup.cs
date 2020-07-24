@@ -32,6 +32,7 @@ namespace HeroesVSDragons
             services.AddTransient<HeroType>();
             services.AddTransient<HeroSchema>();
             services.AddTransient<HeroQuery>();
+            services.AddTransient<HeroMutation>();
 
             services.AddSingleton<IDependencyResolver>(
                 c => new FuncDependencyResolver(type => c.GetRequiredService(type)));
