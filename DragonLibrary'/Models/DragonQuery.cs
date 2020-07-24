@@ -11,6 +11,7 @@ namespace DragonLibrary_.Models
         public DragonQuery(IDragonService dragonService)
         {
             Name = "Query";
+
             Field<ListGraphType<DragonType>>(
                 "dragons",
                 resolve: context => dragonService.GetDragonsAsync()

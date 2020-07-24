@@ -52,12 +52,16 @@ namespace HeroesVSDragons
             services.AddSingleton<IJWTService,JWTService>();
             services.AddSingleton<IHeroService, HeroService>();
             services.AddSingleton<IDragonService, DragonService>();
+            services.AddSingleton<IHitService,HitService>();
             services.AddTransient<HeroType>();
             services.AddTransient<DragonType>();
+            services.AddTransient<HitType>();
             services.AddTransient<HeroSchema>();
             services.AddTransient<DragonSchema>();
+            services.AddTransient<HitSchema>();
             services.AddTransient<HeroQuery>();
             services.AddTransient<DragonQuery>();
+            services.AddTransient<HitQuery>();
             services.AddTransient<HeroMutation>();
             services.AddTransient<DragonMutation>();
 
@@ -89,15 +93,17 @@ namespace HeroesVSDragons
             app.UseGraphQL<DragonSchema>("/graphql/dragon");
             app.UseGraphQLWebSockets<HeroSchema>("/graphql/hero");
             app.UseGraphQL<HeroSchema>("/graphql/hero");
-            
+            app.UseGraphQLWebSockets<HitSchema>("/graphql/hit");
+            app.UseGraphQL<HitSchema>("/graphql/hit");
+
             app.UseGraphQLPlayground(new GraphQLPlaygroundOptions()
             {
                 Path = "/ui/playground"
             });
             app.UseGraphiQLServer(new GraphiQLOptions
             {
-                GraphiQLPath = "/ui/graphiql/dragon",
-                GraphQLEndPoint = "/graphql/dragon"
+                GraphiQLPath = "/ui/graphiql/hit",
+                GraphQLEndPoint = "/graphql/hit"
             });
             app.UseGraphQLVoyager(new GraphQLVoyagerOptions()
             {
