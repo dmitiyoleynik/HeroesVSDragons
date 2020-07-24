@@ -9,7 +9,7 @@ namespace DragonLibrary_.Models
 {
     public class HeroQuery : ObjectGraphType<object>
     {
-        public HeroQuery(IHeroService heroService)
+        public HeroQuery(IHeroService heroService,IJWTService jWTService)
         {
             Name = "Query";
             Field<ListGraphType<HeroType>>("heroes",
@@ -23,6 +23,16 @@ namespace DragonLibrary_.Models
                     var id = context.GetArgument<int>("id");
                     return heroService.GetSortedHeroesAsync(id);
                 });
+            Field<StringGraphType>(
+                "getHeroName",
+                arguments: new QueryArguments(
+                    new QueryArgument<StringGraphType> { Name = "token"}),
+                resolve: context =>
+                {
+                    var token = context.GetArgument<string>("token");
+                    return jWTService.GetHeroFromToken(token);
+                }
+                );
         }
     }
 }

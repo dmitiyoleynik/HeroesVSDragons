@@ -11,9 +11,11 @@ namespace DragonLibrary_.Services
     {
         private readonly IList<Hero> _heroes;
         private readonly Random _random;
+        private readonly IJWTService _jWTService;
 
-        public HeroService()
+        public HeroService(IJWTService jWTService)
         {
+            _jWTService = jWTService;
             _random = new Random();
             _heroes = new List<Hero>();
             _heroes.Add(new Hero(1, "Hero1", DateTime.Now, 1));
@@ -32,7 +34,9 @@ namespace DragonLibrary_.Services
                 var newId = _heroes.Count+1;
                 var hero = CreateHero(newId, name);
                 _heroes.Add(hero);
-                return Task.FromResult("tipoToken");
+                var token = _jWTService.GetToken(hero.Name);
+                
+                return Task.FromResult(token);
             }
             throw new Exception("Tipo exception");
         }
