@@ -9,7 +9,6 @@ namespace DragonLibrary_.Models
             Id = id;
             Name = name;
             Hp = hp;
-            MaxHp = hp;
             Created = created;
         }
 
@@ -17,7 +16,5 @@ namespace DragonLibrary_.Models
         public string Name { get; }
         public int Hp { get; }
         public DateTime Created { get; }
-        public DateTime Died { get; set; }
-        public int MaxHp { get; set; }
     }
 }

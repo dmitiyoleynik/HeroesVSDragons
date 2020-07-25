@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Microsoft.Extensions.Configuration;
+using DragonLibrary_.EFmodels;
+using Microsoft.EntityFrameworkCore;
 
 namespace HeroesVSDragons
 {
@@ -22,6 +24,8 @@ namespace HeroesVSDragons
         {
             Environment = environment;
         }
+        
+        public IConfiguration Configuration { get; }
 
         public Microsoft.AspNetCore.Hosting.IHostingEnvironment Environment { get; }
 
@@ -32,8 +36,18 @@ namespace HeroesVSDragons
                 options.AllowSynchronousIO = true;
             });
 
+            var configuration = new ConfigurationBuilder()
+            .SetBasePath(Environment.ContentRootPath)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{Environment.EnvironmentName}.json", optional: true)
+            .AddEnvironmentVariables().Build();
+
+
+            services.AddDbContext<ApplicationDBContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
-                AddJwtBearer(options=> 
+                AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -49,10 +63,10 @@ namespace HeroesVSDragons
                 .CreateLogger();
 
             services.AddSingleton(logger);
-            services.AddSingleton<IJWTService,JWTService>();
-            services.AddSingleton<IHeroService, HeroService>();
+            services.AddSingleton<IJWTService, JWTService>();
+            services.AddScoped<IHeroService, HeroService>();
             services.AddSingleton<IDragonService, DragonService>();
-            services.AddSingleton<IHitService,HitService>();
+            services.AddSingleton<IHitService, HitService>();
             services.AddTransient<HeroType>();
             services.AddTransient<DragonType>();
             services.AddTransient<HitType>();
@@ -65,9 +79,10 @@ namespace HeroesVSDragons
             services.AddTransient<HeroMutation>();
             services.AddTransient<DragonMutation>();
 
-            services.AddSingleton<IDependencyResolver>(
+            services.AddScoped<IDependencyResolver>(
                 c => new FuncDependencyResolver(type => c.GetRequiredService(type)));
-            services.AddGraphQL(options => {
+            services.AddGraphQL(options =>
+            {
                 options.EnableMetrics = true;
                 options.ExposeExceptions = Environment.IsDevelopment();
             })
@@ -102,8 +117,8 @@ namespace HeroesVSDragons
             });
             app.UseGraphiQLServer(new GraphiQLOptions
             {
-                GraphiQLPath = "/ui/graphiql/hit",
-                GraphQLEndPoint = "/graphql/hit"
+                GraphiQLPath = "/ui/graphiql/hero",
+                GraphQLEndPoint = "/graphql/hero"
             });
             app.UseGraphQLVoyager(new GraphQLVoyagerOptions()
             {

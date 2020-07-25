@@ -6,8 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200724173118_Init.cs" />
+    <Compile Remove="Migrations\20200724173118_Init.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="GraphQL" Version="2.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="RandomNameGeneratorLibrary" Version="1.2.2" />
     <PackageReference Include="Serilog" Version="2.9.0" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
