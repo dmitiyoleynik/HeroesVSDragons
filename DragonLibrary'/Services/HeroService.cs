@@ -52,26 +52,38 @@ namespace DragonLibrary_.Services
             }
         }
 
-        public IEnumerable<Hero> GetHeroes()
+        public Task<IEnumerable<Hero>> GetAllHeroes()
         {
-            return _context.Heroes.OrderBy(h => h.Name)
+            return Task.FromResult(_context.Heroes.OrderBy(h => h.Name)
                 .Select(h => new Hero(h.Id, h.Name, h.Created, h.Weapon))
-                .AsEnumerable();
-        }
-        public Task<IEnumerable<Hero>> GetPageWithHeroesAsync(int pageNumber)
-        {
-            var heroes = GetHeroes();
-
-            return Task.FromResult(heroes.Skip((pageNumber - 1) * _pageSize)
-                .Take(_pageSize)
                 .AsEnumerable());
+        }
+        public Task<IEnumerable<Hero>> GetPageWithHeroesAsync(IEnumerable<Hero> allHeroes, int pageNumber)
+        {
+            return Task.FromResult(allHeroes.Skip((pageNumber - 1) * _pageSize)
+                        .Take(_pageSize)
+                        .AsEnumerable());
+        }
 
+        public Task<IEnumerable<Hero>> FilterHeroesByNameAsync(IEnumerable<Hero> heroes, string beginningOfTheName)
+        {
+            return Task.FromResult(heroes.Where(h => h.Name.StartsWith(beginningOfTheName)));
+        }
+
+        public Task<IEnumerable<Hero>> FilterHeroesCreatedBeforeAsync(IEnumerable<Hero> heroes, DateTime filteringTime)
+        {
+            return Task.FromResult(heroes.Where(h => h.Created < filteringTime));
+        }
+
+        public Task<IEnumerable<Hero>> FilterHeroesCreatedAfterAsync(IEnumerable<Hero> heroes, DateTime filteringTime)
+        {
+            return Task.FromResult(heroes.Where(h => h.Created > filteringTime));
         }
 
         public Task<IEnumerable<Hero>> GetSortedHeroesAsync(int id)
         {
             return Task.FromResult(_context.Heroes.Where(h => h.Id == id)
-                .Select(h=>new Hero(h.Id,h.Name,h.Created,h.Weapon))
+                .Select(h => new Hero(h.Id, h.Name, h.Created, h.Weapon))
                 .AsEnumerable());
         }
         private EFmodels.Hero CreateHero(string name)
@@ -85,9 +97,9 @@ namespace DragonLibrary_.Services
         private bool ValidateHeroName(string name)
         {
             bool isNameUnique = !_context.Heroes.Any(h => h.Name == name);
-            
+
             Regex regex = new Regex(HeroNamePattern);
-            bool isNameValid = regex.Replace(name,"").Length==0;
+            bool isNameValid = regex.Replace(name, "").Length == 0;
 
             _logger.Debug("HeroService.ValidateHeroName: isNameUnique {@isNameUnique} isNameValid {@isNameValid}",
                 isNameUnique, isNameValid);
@@ -95,6 +107,6 @@ namespace DragonLibrary_.Services
             return isNameUnique && isNameValid;
         }
 
-        
+
     }
 }
