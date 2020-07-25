@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Configuration;
 
 namespace DragonLibrary_.Services
 {
@@ -15,14 +16,17 @@ namespace DragonLibrary_.Services
         private readonly ILogger _logger;
         private const string HeroNamePattern = @"[A-Za-z0-9][A-Za-z\s0-9]{2,18}[A-Za-z0-9]";
         private readonly EFmodels.ApplicationDBContext _context;
+        private readonly int _pageSize;
         public HeroService(IJWTService jWTService,
             ILogger logger,
-            EFmodels.ApplicationDBContext context)
+            EFmodels.ApplicationDBContext context,
+            IConfiguration configuration)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _jWTService = jWTService ?? throw new ArgumentNullException(nameof(jWTService));
             _random = new Random();
+            _pageSize = configuration.GetValue<int>("PageSize");
         }
 
         public async Task<string> CreateHeroAsync(string name)
@@ -44,24 +48,32 @@ namespace DragonLibrary_.Services
             {
                 _logger.Error("Error while adding {@name}.", name);
 
-                throw new Exception("Tipo exception");//change it to own exception
+                throw new Exception("Hero already exists or name not right.");//change it to own exception
             }
         }
 
-        public Task<IEnumerable<Hero>> GetHeroesAsync()
+        public IEnumerable<Hero> GetHeroes()
         {
-            return Task.FromResult(
-                _context.Heroes.Select(h => new Hero(h.Id, h.Name, h.Created, h.Weapon)).
-                AsEnumerable());
+            return _context.Heroes.OrderBy(h => h.Name)
+                .Select(h => new Hero(h.Id, h.Name, h.Created, h.Weapon))
+                .AsEnumerable();
+        }
+        public Task<IEnumerable<Hero>> GetPageWithHeroesAsync(int pageNumber)
+        {
+            var heroes = GetHeroes();
+
+            return Task.FromResult(heroes.Skip((pageNumber - 1) * _pageSize)
+                .Take(_pageSize)
+                .AsEnumerable());
+
         }
 
         public Task<IEnumerable<Hero>> GetSortedHeroesAsync(int id)
         {
-            return Task.FromResult(_context.Heroes.Where(h => h.Id == id).
-                Select(h=>new Hero(h.Id,h.Name,h.Created,h.Weapon)).
-                AsEnumerable());
+            return Task.FromResult(_context.Heroes.Where(h => h.Id == id)
+                .Select(h=>new Hero(h.Id,h.Name,h.Created,h.Weapon))
+                .AsEnumerable());
         }
-
         private EFmodels.Hero CreateHero(string name)
         {
             var creationTime = DateTime.Now;
@@ -82,5 +94,7 @@ namespace DragonLibrary_.Services
 
             return isNameUnique && isNameValid;
         }
+
+        
     }
 }
