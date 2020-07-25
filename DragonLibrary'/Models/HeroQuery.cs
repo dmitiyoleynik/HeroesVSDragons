@@ -40,6 +40,16 @@ namespace DragonLibrary_.Models
                     {
                         heroes = heroService.FilterHeroesByNameAsync(heroes,beginningOfTheName).Result;
                     }
+                    
+                    if (before!=null)
+                    {
+                        heroes = heroService.FilterHeroesCreatedBeforeAsync(heroes, before.Value).Result;
+                    }
+
+                    if (after != null)
+                    {
+                        heroes = heroService.FilterHeroesCreatedAfterAsync(heroes, after.Value).Result;
+                    }
 
                     return heroService.GetPageWithHeroesAsync(heroes, pageNumber);
                 });

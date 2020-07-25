@@ -9,7 +9,7 @@ namespace DragonLibrary_.Models
         {
             Field(h => h.Id);
             Field(h => h.Name);
-            Field(h => h.Created);
+            Field<DateTimeGraphType>("Created");
             Field(h => h.Weapon);
         }
     }
