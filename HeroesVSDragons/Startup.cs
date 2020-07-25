@@ -63,10 +63,11 @@ namespace HeroesVSDragons
                 .CreateLogger();
 
             services.AddSingleton(logger);
-            services.AddSingleton<IJWTService, JWTService>();
+            services.AddScoped<IJWTService, JWTService>();
             services.AddScoped<IHeroService, HeroService>();
-            services.AddSingleton<IDragonService, DragonService>();
-            services.AddSingleton<IHitService, HitService>();
+            services.AddScoped<IDragonService, DragonService>();
+            services.AddScoped<IHitService, HitService>();
+            services.AddScoped<IValidatorService, ValidatorService>();
             services.AddTransient<HeroType>();
             services.AddTransient<DragonType>();
             services.AddTransient<HitType>();
@@ -117,13 +118,13 @@ namespace HeroesVSDragons
             });
             app.UseGraphiQLServer(new GraphiQLOptions
             {
-                GraphiQLPath = "/ui/graphiql/hero",
-                GraphQLEndPoint = "/graphql/hero"
+                GraphiQLPath = "/ui/graphiql/dragon",
+                GraphQLEndPoint = "/graphql/dragon"
             });
             app.UseGraphQLVoyager(new GraphQLVoyagerOptions()
             {
-                GraphQLEndPoint = "/graphql",
-                Path = "/ui/voyager"
+                GraphQLEndPoint = "/graphql/hero",
+                Path = "/ui/voyager/hero"
             });
         }
     }

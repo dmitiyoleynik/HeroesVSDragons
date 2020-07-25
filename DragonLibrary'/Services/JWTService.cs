@@ -11,21 +11,14 @@ namespace DragonLibrary_.Services
     public class JWTService : IJWTService
     {
         private readonly ILogger _logger;
+
         public JWTService(ILogger logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         public string GetHeroNameFromToken(string token)
         {
-            var handler = new JwtSecurityTokenHandler();
-            var validations = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-                ValidateIssuer = false,
-                ValidateAudience = false
-            };
-            var claims = handler.ValidateToken(token, validations, out var tokenSecure);
+            var claims = GetClaims(token);
 
             _logger.Debug("JWTService.GetHeroNameFromToken: token:{@token}, name:{@name}.",
                 token, 
@@ -53,6 +46,21 @@ namespace DragonLibrary_.Services
             _logger.Debug("JWTService.GetToken: Token for hero {@hero} created.", token);
 
             return token;
+        }
+
+        private ClaimsPrincipal GetClaims(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var validations = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+            var claims = handler.ValidateToken(token, validations, out var tokenSecure);
+
+            return claims;
         }
     }
 }

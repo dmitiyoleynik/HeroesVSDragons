@@ -86,6 +86,7 @@ namespace DragonLibrary_.Services
                 .Select(h => new Hero(h.Id, h.Name, h.Created, h.Weapon))
                 .AsEnumerable());
         }
+        
         private EFmodels.Hero CreateHero(string name)
         {
             var creationTime = DateTime.Now;
@@ -107,6 +108,9 @@ namespace DragonLibrary_.Services
             return isNameUnique && isNameValid;
         }
 
-
+        public bool IsHeroExists(string name)
+        {
+            return _context.Heroes.Any(h => h.Name == name);
+        }
     }
 }

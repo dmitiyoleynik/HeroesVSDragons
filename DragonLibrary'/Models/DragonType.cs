@@ -12,7 +12,8 @@ namespace DragonLibrary_.Models
             Field(d => d.Id);
             Field(d => d.Name);
             Field(d => d.Hp);
-            Field(d => d.Created);
+            Field(d => d.MaxHp);
+            Field<DateTimeGraphType>("Created");
         }
     }
 }
