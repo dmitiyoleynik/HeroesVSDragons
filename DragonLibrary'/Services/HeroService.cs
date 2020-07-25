@@ -112,5 +112,17 @@ namespace DragonLibrary_.Services
         {
             return _context.Heroes.Any(h => h.Name == name);
         }
+
+        public Hero GetHeroByName(string name)
+        {
+            var hero = _context.Heroes.FirstOrDefault(h=>h.Name == name);
+            
+            if (hero == null)
+            {
+                throw new Exception("Hero doesn't exists.");
+            }
+
+            return new Hero(hero.Id,hero.Name,hero.Created,hero.Weapon);
+        }
     }
 }

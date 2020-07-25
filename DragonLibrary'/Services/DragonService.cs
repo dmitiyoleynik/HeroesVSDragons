@@ -86,7 +86,6 @@ namespace DragonLibrary_.Services
 
         public Task<IEnumerable<Dragon>> GetDragonsAsync()
         {
-            //return Task.FromResult(_context.Dragons.AsEnumerable());
             return Task.FromResult(_context.Dragons.OrderBy(d => d.Name)
                 .Select(d => new Dragon(d.Id, d.Name,d.Hp , d.Created, d.MaxHp))
                 .AsEnumerable());

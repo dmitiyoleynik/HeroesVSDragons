@@ -79,6 +79,7 @@ namespace HeroesVSDragons
             services.AddTransient<HitQuery>();
             services.AddTransient<HeroMutation>();
             services.AddTransient<DragonMutation>();
+            services.AddTransient<HitMutation>();
 
             services.AddScoped<IDependencyResolver>(
                 c => new FuncDependencyResolver(type => c.GetRequiredService(type)));
@@ -118,8 +119,8 @@ namespace HeroesVSDragons
             });
             app.UseGraphiQLServer(new GraphiQLOptions
             {
-                GraphiQLPath = "/ui/graphiql/dragon",
-                GraphQLEndPoint = "/graphql/dragon"
+                GraphiQLPath = "/ui/graphiql/hit",
+                GraphQLEndPoint = "/graphql/hit"
             });
             app.UseGraphQLVoyager(new GraphQLVoyagerOptions()
             {
