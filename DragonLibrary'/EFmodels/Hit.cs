@@ -6,6 +6,7 @@ namespace DragonLibrary_.EFmodels
 {
     public class Hit
     {
+        public int Id { get; set; }
         public int Power { get; set; }
         public DateTime ExecutionTime { get; set; }
         public int HeroId { get; set; }

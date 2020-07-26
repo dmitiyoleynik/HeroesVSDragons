@@ -27,11 +27,27 @@ namespace DragonLibrary_.Services
 
         public async Task CreateHit(Hero hero, int dragonId)
         {
-            //*Формула расчета силы удара = Сила Оружия героя + (случайное число от 1 до 3)
             var power = _random.Next(1, 3)+hero.Weapon;
             var hit = new EFmodels.Hit { DragonId = dragonId, HeroId = hero.Id, ExecutionTime = DateTime.Now, Power = power };
+            var dragon = _context.Dragons.FirstOrDefault(d=>d.Id==dragonId);
+            dragon.Hp -= power;
+            _context.Dragons.Update(dragon);
             _context.Hits.Add(hit);
+            
             await _context.SaveChangesAsync();
+        }
+
+        public Task<IEnumerable<DamageStatistic>> GetHeroDamageStatistic(int id)
+        {
+            var heroHits = _context.Hits.Where(h => h.HeroId == id);
+             var damageStatistic = heroHits.GroupBy(h => h.DragonId)
+                .Select(s => new DamageStatistic
+                {
+                    DragonId = s.Key,
+                    SummDamage = s.Sum(s => s.Power)
+                });
+
+            return Task.FromResult(damageStatistic.AsEnumerable());
         }
 
         public Task<IEnumerable<Hit>> GetHitsAsync()

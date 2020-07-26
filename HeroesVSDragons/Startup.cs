@@ -71,6 +71,7 @@ namespace HeroesVSDragons
             services.AddTransient<HeroType>();
             services.AddTransient<DragonType>();
             services.AddTransient<HitType>();
+            services.AddTransient<DamageStatisticType>();
             services.AddTransient<HeroSchema>();
             services.AddTransient<DragonSchema>();
             services.AddTransient<HitSchema>();

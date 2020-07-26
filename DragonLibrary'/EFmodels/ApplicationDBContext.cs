@@ -12,8 +12,8 @@ namespace DragonLibrary_.EFmodels
         {   }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Hit>().
-                HasKey(h => new { h.HeroId, h.DragonId });
+            //modelBuilder.Entity<Hit>().
+            //    HasKey(h => new { h.HeroId, h.DragonId });
         }
 
     }
