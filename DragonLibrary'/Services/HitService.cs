@@ -31,6 +31,11 @@ namespace DragonLibrary_.Services
             var hit = new EFmodels.Hit { DragonId = dragonId, HeroId = hero.Id, ExecutionTime = DateTime.Now, Power = power };
             var dragon = _context.Dragons.FirstOrDefault(d => d.Id == dragonId);
             dragon.Hp -= power;
+            if (dragon.Hp<=0)
+            {
+                dragon.Hp = 0;
+                dragon.Died = DateTime.Now;
+            }
             _context.Dragons.Update(dragon);
             _context.Hits.Add(hit);
 

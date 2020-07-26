@@ -50,16 +50,16 @@ namespace DragonLibrary_.Models
                     return heroService.GetPageWithHeroesAsync(heroes, pageNumber);
                 });
 
-            Field<StringGraphType>(
-                "getHeroName",
-                arguments: new QueryArguments(
-                    new QueryArgument<StringGraphType> { Name = "token" }),
-                resolve: context =>
-                {
-                    var token = context.GetArgument<string>("token");
-                    return jWTService.GetHeroNameFromToken(token);
-                }
-                );
+            //Field<StringGraphType>(
+            //    "getHeroName",
+            //    arguments: new QueryArguments(
+            //        new QueryArgument<StringGraphType> { Name = "token" }),
+            //    resolve: context =>
+            //    {
+            //        var token = context.GetArgument<string>("token");
+            //        return jWTService.GetHeroNameFromToken(token);
+            //    }
+            //    );
         }
     }
 }

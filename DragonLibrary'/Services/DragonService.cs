@@ -60,7 +60,7 @@ namespace DragonLibrary_.Services
             var dragon = _context.Dragons.FirstOrDefault(d => d.Id == id);
 
             Dragon resultDragon;
-            if (dragon == null)
+            if (dragon == null || !IsDragonAlive(dragon))
             {
                 resultDragon = null;
             }
@@ -79,7 +79,8 @@ namespace DragonLibrary_.Services
 
         public Task<IEnumerable<Dragon>> GetDragonsAsync()
         {
-            return Task.FromResult(_context.Dragons.OrderBy(d => d.Name)
+            return Task.FromResult(_context.Dragons.Where(d=>IsDragonAlive(d))
+                .OrderBy(d => d.Name)
                 .Select(d => new Dragon(d.Id, d.Name, d.Hp, d.Created, d.MaxHp))
                 .AsEnumerable());
         }
@@ -89,6 +90,11 @@ namespace DragonLibrary_.Services
             return Task.FromResult(allDragons.Skip((pageNumber - 1) * _pageSize)
                         .Take(_pageSize)
                         .AsEnumerable());
+        }
+
+        private bool IsDragonAlive(EFmodels.Dragon dragon)
+        {
+            return dragon.Hp > 0;
         }
 
         private string CreateDragonName()

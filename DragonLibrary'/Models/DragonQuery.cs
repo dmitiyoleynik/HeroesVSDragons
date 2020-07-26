@@ -26,6 +26,7 @@ namespace DragonLibrary_.Models
 
                     return dragonService.FindDragonByIdAsync(id);
                 });
+
             Field<ListGraphType<DragonType>>(
                 "dragons",
                 arguments: new QueryArguments

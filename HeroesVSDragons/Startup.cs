@@ -116,7 +116,7 @@ namespace HeroesVSDragons
             });
             app.UseGraphiQLServer(new GraphiQLOptions
             {
-                GraphiQLPath = "/ui/graphiql/hit",
+                GraphiQLPath = "/ui/graphiql",
                 GraphQLEndPoint = "/graphql/hit"
             });
             app.UseGraphQLVoyager(new GraphQLVoyagerOptions()
