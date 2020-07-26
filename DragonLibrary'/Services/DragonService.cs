@@ -35,6 +35,7 @@ namespace DragonLibrary_.Services
             var dragon = new EFmodels.Dragon { Hp = hp, MaxHp = hp, Created = DateTime.Now, Name = name };
             _context.Dragons.Add(dragon);
             await _context.SaveChangesAsync();
+            _logger.Debug("Dragon {@dragon} created.", dragon);
 
             return _context.Dragons.FirstOrDefault(d => d.Name == name).Id;
 
@@ -42,44 +43,55 @@ namespace DragonLibrary_.Services
 
         public Task<IEnumerable<Dragon>> FilterDragonsByHp(IEnumerable<Dragon> dragons, int hpMoreThen = 0, int hpLessThen = 100)
         {
+            _logger.Debug("Filtering dragons by hp.");
+
             return Task.FromResult(dragons.Where(d => d.Hp < hpLessThen && d.Hp > hpMoreThen));
         }
 
         public Task<IEnumerable<Dragon>> FilterDragonsByMaxHp(IEnumerable<Dragon> dragons, int maxHpMoreThen, int maxHpLessThen)
         {
+            _logger.Debug("Filtering dragons by max hp.");
+
             return Task.FromResult(dragons.Where(d => d.Hp < maxHpLessThen && d.Hp > maxHpMoreThen));
         }
 
         public Task<IEnumerable<Dragon>> FilterDragonsByNameAsync(IEnumerable<Dragon> allDragons, string beginningOfTheName)
         {
+            _logger.Debug("Filtering dragons by name.");
+
             return Task.FromResult(allDragons.Where(d => d.Name.StartsWith(beginningOfTheName)));
         }
 
         public Task<Dragon> FindDragonByIdAsync(int id)
         {
-            var dragon = _context.Dragons.FirstOrDefault(d => d.Id == id);
+            var dbDragon = _context.Dragons.FirstOrDefault(d => d.Id == id);
 
-            Dragon resultDragon;
-            if (dragon == null || !IsDragonAlive(dragon))
+            Dragon dragon;
+
+            if (dbDragon == null || !IsDragonAlive(dbDragon))
             {
-                resultDragon = null;
+                _logger.Debug("Dragon not found.");
+
+                dragon = null;
             }
             else
             {
-                resultDragon = new Dragon(dragon.Id,
-                dragon.Name,
-                dragon.Hp,
-                dragon.Created,
-                dragon.MaxHp
+                dragon = new Dragon(dbDragon.Id,
+                dbDragon.Name,
+                dbDragon.Hp,
+                dbDragon.Created,
+                dbDragon.MaxHp
                 );
+                
+                _logger.Debug("Dragon {@dragon} found.", dragon);
             }
 
-            return Task.FromResult(resultDragon);
+            return Task.FromResult(dragon);
         }
 
         public Task<IEnumerable<Dragon>> GetDragonsAsync()
         {
-            return Task.FromResult(_context.Dragons.Where(d=>IsDragonAlive(d))
+            return Task.FromResult(_context.Dragons.Where(d=>d.Hp>0)
                 .OrderBy(d => d.Name)
                 .Select(d => new Dragon(d.Id, d.Name, d.Hp, d.Created, d.MaxHp))
                 .AsEnumerable());
@@ -87,6 +99,8 @@ namespace DragonLibrary_.Services
 
         public Task<IEnumerable<Dragon>> GetPageWithDragonsAsync(IEnumerable<Dragon> allDragons, int pageNumber)
         {
+            _logger.Debug("Getting {@number} page of dragons.", pageNumber);
+
             return Task.FromResult(allDragons.Skip((pageNumber - 1) * _pageSize)
                         .Take(_pageSize)
                         .AsEnumerable());
@@ -100,8 +114,6 @@ namespace DragonLibrary_.Services
         private string CreateDragonName()
         {
             var personNameGenerator = new PersonNameGenerator();
-
-            //(в начале и в конце не должно быть пробелов, первый символ всегда заглавный, латинские символы, пробелы, [4, 20] размер);
             var dragonName = personNameGenerator.GenerateRandomFirstName();
 
             return dragonName;

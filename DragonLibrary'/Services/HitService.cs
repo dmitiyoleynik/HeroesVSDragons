@@ -38,6 +38,7 @@ namespace DragonLibrary_.Services
             }
             _context.Dragons.Update(dragon);
             _context.Hits.Add(hit);
+            _logger.Debug("Hit {@hit} created.", hit);
 
             await _context.SaveChangesAsync();
         }
@@ -45,27 +46,33 @@ namespace DragonLibrary_.Services
         public Task<IEnumerable<DamageStatistic>> GetHeroDamageStatistic(int id)
         {
             var heroHits = _context.Hits.Where(h => h.HeroId == id);
-            var damageStatistic = heroHits.GroupBy(h => h.DragonId)
+            var damageStatisticWithDragonId = heroHits.GroupBy(h => h.DragonId)
                .Select(s => new 
                {
                    DragonName = s.Key,
                    SummDamage = s.Sum(s => s.Power)
                });
-            var result = _context.Dragons.Join(damageStatistic,
+            var damageStatisticWithDragonName = _context.Dragons.Join(damageStatisticWithDragonId,
                 d => d.Id,
                 s => s.DragonName,
                 (d, s) => new DamageStatistic { DragonName = d.Name, SummDamage = s.SummDamage });
 
-            return Task.FromResult(result.AsEnumerable());
+            _logger.Debug("Damage statistic {@result}.",damageStatisticWithDragonName);
+
+            return Task.FromResult(damageStatisticWithDragonName.AsEnumerable());
         }
 
         public Task<IEnumerable<Hit>> GetHitsAsync()
         {
+            _logger.Debug("Getting all hits");
+
             return Task.FromResult(_context.Hits.Select(h => new Hit(h.Power, h.ExecutionTime, h.HeroId, h.DragonId)).AsEnumerable());
         }
 
         public Task<IEnumerable<DamageStatistic>> GetPageWithDamagesAsync(IEnumerable<DamageStatistic> damageStatistic, int pageNumber)
         {
+            _logger.Debug("Getting {@number} page of hits",pageNumber);
+
             return Task.FromResult(damageStatistic.Skip((pageNumber - 1) * _pageSize)
                         .Take(_pageSize)
                         .AsEnumerable());
@@ -73,21 +80,29 @@ namespace DragonLibrary_.Services
 
         public Task<IEnumerable<DamageStatistic>> SortByDamageAsc(IEnumerable<DamageStatistic> damageStatistic)
         {
+            _logger.Debug("Sorting hits by damage asc.");
+
             return Task.FromResult(damageStatistic.OrderBy(s=>s.SummDamage).AsEnumerable());
         }
 
         public Task<IEnumerable<DamageStatistic>> SortByDamageDesc(IEnumerable<DamageStatistic> damageStatistic)
         {
+            _logger.Debug("Sorting hits by damage desc.");
+
             return Task.FromResult(damageStatistic.OrderByDescending(s=>s.SummDamage).AsEnumerable());
         }
 
         public Task<IEnumerable<DamageStatistic>> SortByNameAsc(IEnumerable<DamageStatistic> damageStatistic)
         {
+            _logger.Debug("Sorting hits by name asc.");
+
             return Task.FromResult(damageStatistic.OrderBy(s => s.DragonName).AsEnumerable());
         }
 
         public Task<IEnumerable<DamageStatistic>> SortByNameDesc(IEnumerable<DamageStatistic> damageStatistic)
         {
+            _logger.Debug("Sorting hits by damage desc.");
+
             return Task.FromResult(damageStatistic.OrderByDescending(s => s.DragonName).AsEnumerable());
         }
     }

@@ -54,6 +54,8 @@ namespace DragonLibrary_.Services
 
         public Task<IEnumerable<Hero>> GetAllHeroes()
         {
+            _logger.Debug("Getting all heroes.");
+
             return Task.FromResult(_context.Heroes.OrderBy(h => h.Name)
                 .Select(h => new Hero(h.Id, h.Name, h.Created, h.Weapon))
                 .AsEnumerable());
@@ -61,6 +63,8 @@ namespace DragonLibrary_.Services
 
         public Task<IEnumerable<Hero>> GetPageWithHeroesAsync(IEnumerable<Hero> allHeroes, int pageNumber)
         {
+            _logger.Debug("Getting {@number} page of heroes.", pageNumber);
+
             return Task.FromResult(allHeroes.Skip((pageNumber - 1) * _pageSize)
                         .Take(_pageSize)
                         .AsEnumerable());
@@ -68,21 +72,29 @@ namespace DragonLibrary_.Services
 
         public Task<IEnumerable<Hero>> FilterHeroesByNameAsync(IEnumerable<Hero> heroes, string beginningOfTheName)
         {
+            _logger.Debug("Filtering heroes by name.");
+
             return Task.FromResult(heroes.Where(h => h.Name.StartsWith(beginningOfTheName)));
         }
 
         public Task<IEnumerable<Hero>> FilterHeroesCreatedBeforeAsync(IEnumerable<Hero> heroes, DateTime filteringTime)
         {
+            _logger.Debug("Filtering heroes by time (created before).");
+
             return Task.FromResult(heroes.Where(h => h.Created < filteringTime));
         }
 
         public Task<IEnumerable<Hero>> FilterHeroesCreatedAfterAsync(IEnumerable<Hero> heroes, DateTime filteringTime)
         {
+            _logger.Debug("Filtering heroes by time (created after).");
+
             return Task.FromResult(heroes.Where(h => h.Created > filteringTime));
         }
 
         public Task<IEnumerable<Hero>> GetSortedHeroesAsync(int id)
         {
+            _logger.Debug("Sorting heroes.");
+
             return Task.FromResult(_context.Heroes.Where(h => h.Id == id)
                 .Select(h => new Hero(h.Id, h.Name, h.Created, h.Weapon))
                 .AsEnumerable());
@@ -94,6 +106,8 @@ namespace DragonLibrary_.Services
             var weapon = _random.Next(1, 6);
 
             var hero = new EFmodels.Hero { Name = name, Created = creationTime, Weapon = weapon };
+            _logger.Debug("Hero {@hero} created.",hero);
+
             return hero;
         }
 

@@ -17,6 +17,7 @@ namespace DragonLibrary_.Models
                 },
                 resolve: context =>
                 {
+
                     var token = context.GetArgument<string>("token");
                     validator.ValidateToken(token);
 
