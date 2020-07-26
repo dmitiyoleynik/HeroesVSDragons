@@ -10,11 +10,5 @@ namespace DragonLibrary_.EFmodels
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
             : base(options)
         {   }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //modelBuilder.Entity<Hit>().
-            //    HasKey(h => new { h.HeroId, h.DragonId });
-        }
-
     }
 }

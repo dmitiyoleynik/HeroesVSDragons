@@ -3,9 +3,9 @@ using GraphQL.Types;
 
 namespace DragonLibrary_.Models
 {
-    public class HeroType :ObjectGraphType<Hero>
+    public class HeroType : ObjectGraphType<Hero>
     {
-        public HeroType(IHeroService heroService)
+        public HeroType()
         {
             Field(h => h.Id);
             Field(h => h.Name);

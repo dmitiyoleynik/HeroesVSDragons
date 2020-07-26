@@ -5,7 +5,7 @@ namespace DragonLibrary_.Models
 {
     public class DragonMutation : ObjectGraphType<object>
     {
-        public DragonMutation(IDragonService dragonService, 
+        public DragonMutation(IDragonService dragonService,
             IValidatorService validator)
         {
             Name = "Mutation";

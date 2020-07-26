@@ -5,7 +5,7 @@ namespace DragonLibrary_.Models
 {
     public class HeroSchema : Schema
     {
-        public  HeroSchema(HeroQuery heroQuery, HeroMutation heroMutation,IDependencyResolver dependencyResolver)
+        public HeroSchema(HeroQuery heroQuery, HeroMutation heroMutation, IDependencyResolver dependencyResolver)
         {
             Query = heroQuery;
             Mutation = heroMutation;

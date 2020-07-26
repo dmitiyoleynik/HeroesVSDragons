@@ -24,7 +24,7 @@ namespace HeroesVSDragons
         {
             Environment = environment;
         }
-        
+
         public IConfiguration Configuration { get; }
 
         public Microsoft.AspNetCore.Hosting.IHostingEnvironment Environment { get; }
@@ -91,19 +91,15 @@ namespace HeroesVSDragons
             })
             .AddWebSockets()
             .AddDataLoader();
-            ////
             services.AddControllersWithViews();
-            ////
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
-            ///////
             app.UseAuthentication();
             app.UseAuthorization();
-            ///////
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseWebSockets();

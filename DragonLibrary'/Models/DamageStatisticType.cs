@@ -1,7 +1,4 @@
 ﻿using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DragonLibrary_.Models
 {
@@ -9,7 +6,7 @@ namespace DragonLibrary_.Models
     {
         public DamageStatisticType()
         {
-            Field(d => d.DragonId);
+            Field(d => d.DragonName);
             Field(d => d.SummDamage);
         }
     }

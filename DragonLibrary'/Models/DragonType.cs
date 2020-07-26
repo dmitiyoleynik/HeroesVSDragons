@@ -1,11 +1,8 @@
 ﻿using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DragonLibrary_.Models
 {
-    public class DragonType:ObjectGraphType<Dragon>
+    public class DragonType : ObjectGraphType<Dragon>
     {
         public DragonType()
         {

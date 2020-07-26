@@ -21,7 +21,7 @@ namespace DragonLibrary_.Services
             var claims = GetClaims(token);
 
             _logger.Debug("JWTService.GetHeroNameFromToken: token:{@token}, name:{@name}.",
-                token, 
+                token,
                 claims.Identity.Name);
 
             return claims.Identity.Name;

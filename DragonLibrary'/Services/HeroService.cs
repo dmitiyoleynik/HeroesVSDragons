@@ -58,6 +58,7 @@ namespace DragonLibrary_.Services
                 .Select(h => new Hero(h.Id, h.Name, h.Created, h.Weapon))
                 .AsEnumerable());
         }
+
         public Task<IEnumerable<Hero>> GetPageWithHeroesAsync(IEnumerable<Hero> allHeroes, int pageNumber)
         {
             return Task.FromResult(allHeroes.Skip((pageNumber - 1) * _pageSize)
@@ -86,7 +87,7 @@ namespace DragonLibrary_.Services
                 .Select(h => new Hero(h.Id, h.Name, h.Created, h.Weapon))
                 .AsEnumerable());
         }
-        
+
         private EFmodels.Hero CreateHero(string name)
         {
             var creationTime = DateTime.Now;
@@ -95,6 +96,7 @@ namespace DragonLibrary_.Services
             var hero = new EFmodels.Hero { Name = name, Created = creationTime, Weapon = weapon };
             return hero;
         }
+
         private bool ValidateHeroName(string name)
         {
             bool isNameUnique = !_context.Heroes.Any(h => h.Name == name);
@@ -115,14 +117,14 @@ namespace DragonLibrary_.Services
 
         public Hero GetHeroByName(string name)
         {
-            var hero = _context.Heroes.FirstOrDefault(h=>h.Name == name);
-            
+            var hero = _context.Heroes.FirstOrDefault(h => h.Name == name);
+
             if (hero == null)
             {
                 throw new Exception("Hero doesn't exists.");
             }
 
-            return new Hero(hero.Id,hero.Name,hero.Created,hero.Weapon);
+            return new Hero(hero.Id, hero.Name, hero.Created, hero.Weapon);
         }
     }
 }

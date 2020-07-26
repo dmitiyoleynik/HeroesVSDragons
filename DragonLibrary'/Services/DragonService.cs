@@ -11,43 +11,36 @@ namespace DragonLibrary_.Services
 {
     public class DragonService : IDragonService
     {
-        //private readonly IList<Dragon> _dragons;
         private readonly Random _random;
         private readonly ILogger _logger;
         private readonly int _pageSize;
         private readonly EFmodels.ApplicationDBContext _context;
 
         public DragonService(ILogger logger,
-            EFmodels.ApplicationDBContext context, 
+            EFmodels.ApplicationDBContext context,
             IConfiguration configuration)
         {
             _random = new Random();
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _pageSize = configuration.GetValue<int>("PageSize");
-
-            //_dragons = new List<Dragon>();
-            //_dragons.Add(new Dragon(1, "Paturnax", 100, DateTime.Now));
         }
 
-        public async Task<int>/*Task*/ CreateDragonAsync()
+        public async Task<int> CreateDragonAsync()
         {
             string name = CreateDragonName();
-            //int id = _dragons.Count;
             int hp = _random.Next(80, 100);
             DateTime created = DateTime.Now;
 
-            //var dragon = new Dragon(name, hp, created);
-            //_dragons.Add(dragon);
             var dragon = new EFmodels.Dragon { Hp = hp, MaxHp = hp, Created = DateTime.Now, Name = name };
             _context.Dragons.Add(dragon);
             await _context.SaveChangesAsync();
 
-            return _context.Dragons.FirstOrDefault(d=>d.Name==name).Id;
+            return _context.Dragons.FirstOrDefault(d => d.Name == name).Id;
 
         }
 
-        public Task<IEnumerable<Dragon>> FilterDragonsByHp(IEnumerable<Dragon> dragons, int hpMoreThen=0, int hpLessThen=100)
+        public Task<IEnumerable<Dragon>> FilterDragonsByHp(IEnumerable<Dragon> dragons, int hpMoreThen = 0, int hpLessThen = 100)
         {
             return Task.FromResult(dragons.Where(d => d.Hp < hpLessThen && d.Hp > hpMoreThen));
         }
@@ -67,7 +60,7 @@ namespace DragonLibrary_.Services
             var dragon = _context.Dragons.FirstOrDefault(d => d.Id == id);
 
             Dragon resultDragon;
-            if (dragon==null)
+            if (dragon == null)
             {
                 resultDragon = null;
             }
@@ -87,7 +80,7 @@ namespace DragonLibrary_.Services
         public Task<IEnumerable<Dragon>> GetDragonsAsync()
         {
             return Task.FromResult(_context.Dragons.OrderBy(d => d.Name)
-                .Select(d => new Dragon(d.Id, d.Name,d.Hp , d.Created, d.MaxHp))
+                .Select(d => new Dragon(d.Id, d.Name, d.Hp, d.Created, d.MaxHp))
                 .AsEnumerable());
         }
 

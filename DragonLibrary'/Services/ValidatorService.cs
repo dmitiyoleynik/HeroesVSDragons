@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DragonLibrary_.Services
 {
-    public class ValidatorService:IValidatorService
+    public class ValidatorService : IValidatorService
     {
         private readonly IJWTService _jWTService;
         private readonly IHeroService _heroService;

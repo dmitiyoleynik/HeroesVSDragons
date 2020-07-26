@@ -2,7 +2,7 @@
 
 namespace DragonLibrary_.Models
 {
-    public class HitType: ObjectGraphType<Hit>
+    public class HitType : ObjectGraphType<Hit>
     {
         public HitType()
         {
