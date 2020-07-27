@@ -48,7 +48,7 @@ namespace DragonLibrary_.Services
             {
                 _logger.Error("Error while adding {@name}.", name);
 
-                throw new Exception("Hero already exists or name not right.");//change it to own exception
+                throw new Exception("Hero already exists or name not right.");
             }
         }
 
